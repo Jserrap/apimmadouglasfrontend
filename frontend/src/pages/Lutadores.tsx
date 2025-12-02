@@ -38,6 +38,30 @@ export default function Lutadores(): JSX.Element {
     return () => { mounted = false; };
   }, []);
 
+  // Função simples para adicionar um lutador via prompt + POST minimal
+  const handleAddLutador = async () => {
+    const nome = prompt('Nome do lutador:');
+    if (!nome) return;
+    try {
+      // opcional: feedback de loading local (poderia usar um state separado)
+      const res = await fetch('/lutadores', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome }),
+      });
+      if (!res.ok) {
+        const txt = await res.text().catch(() => null);
+        throw new Error(txt || `Erro ${res.status}`);
+      }
+      const created = await res.json();
+      // normaliza { data: created } caso venha envelope
+      const normalized = (created && (created as any).data) ? (created as any).data : created;
+      setData((prev) => prev ? [normalized, ...prev] : [normalized]);
+    } catch (err: any) {
+      alert(`Falha ao criar lutador: ${err?.message ?? err}`);
+    }
+  };
+
   // Placeholders simples para loading
   if (loading) {
     return (
@@ -47,7 +71,7 @@ export default function Lutadores(): JSX.Element {
             <h1 className="text-3xl font-bold text-white">Lutadores</h1>
             <p className="text-neutral-400">Gerencie os lutadores cadastrados</p>
           </div>
-          <button className="px-4 py-2 bg-red-600 text-white rounded-md">+ Adicionar Lutador</button>
+          <button onClick={handleAddLutador} className="px-4 py-2 bg-red-600 text-white rounded-md">+ Adicionar Lutador</button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -66,7 +90,7 @@ export default function Lutadores(): JSX.Element {
           <h1 className="text-3xl font-bold text-white">Lutadores</h1>
           <p className="text-neutral-400">Gerencie os lutadores cadastrados</p>
         </div>
-        <button className="px-4 py-2 bg-red-600 text-white rounded-md">+ Adicionar Lutador</button>
+        <button onClick={handleAddLutador} className="px-4 py-2 bg-red-600 text-white rounded-md">+ Adicionar Lutador</button>
       </div>
 
       {error && <div className="text-red-500 mb-4">Erro: {error}</div>}
