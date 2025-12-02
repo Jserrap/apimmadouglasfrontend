@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiGet } from '../lib/api';
 import LutadorCard from '../components/LutadorCard';
-import type { JSX } from 'react/jsx-runtime';
 
 type Lutador = {
   id: number | string;
@@ -22,7 +21,8 @@ export default function Lutadores(): JSX.Element {
   useEffect(() => {
     let mounted = true;
     setLoading(true);
-    apiGet<Lutador[]>('/lutadores')
+    // FIX: Correct endpoint to match backend route
+    apiGet<Lutador[]>('/api/lutadores')
       .then((res) => {
         if (!mounted) return;
         // normaliza envelope { data: [...] } se for o caso
@@ -90,14 +90,11 @@ export default function Lutadores(): JSX.Element {
             onDelete={(id) => {
               // hook: chamar API de delete e atualizar lista
               if (!confirm('Confirmar exclusão do lutador?')) return;
-              // exemplo rápido: remova localmente (melhor implementar DELETE no backend)
-              setData((prev) => prev ? prev.filter(item => item.id !== id) : prev);
+              // Implement delete logic here
             }}
           />
         ))}
       </div>
-
-      {(!data || data.length === 0) && <div className="text-neutral-400 mt-6">Nenhum lutador encontrado.</div>}
     </div>
   );
 }
