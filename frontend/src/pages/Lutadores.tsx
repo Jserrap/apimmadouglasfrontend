@@ -21,11 +21,10 @@ export default function Lutadores(): JSX.Element {
   useEffect(() => {
     let mounted = true;
     setLoading(true);
-    // FIX: Correct endpoint to match backend route
-    apiGet<Lutador[]>('/api/lutadores')
+    // CORRECT: Remove "/api" from here, add only endpoint name!
+    apiGet<Lutador[]>('lutadores')
       .then((res) => {
         if (!mounted) return;
-        // normaliza envelope { data: [...] } se for o caso
         const normalized = (res && (res as any).data) ? (res as any).data : res;
         setData(normalized);
         setError(null);
@@ -38,7 +37,6 @@ export default function Lutadores(): JSX.Element {
     return () => { mounted = false; };
   }, []);
 
-  // Placeholders simples para loading
   if (loading) {
     return (
       <div>
@@ -83,14 +81,11 @@ export default function Lutadores(): JSX.Element {
             cartel={l.cartel}
             avatarUrl={l.avatar ?? null}
             onEdit={(id) => {
-              // hook: aqui você pode abrir modal ou navegar para /lutadores/:id/edit
               console.log('editar', id);
-              // ex: navigate(`/lutadores/${id}/edit`)
             }}
             onDelete={(id) => {
-              // hook: chamar API de delete e atualizar lista
               if (!confirm('Confirmar exclusão do lutador?')) return;
-              // Implement delete logic here
+              // delete logic
             }}
           />
         ))}
