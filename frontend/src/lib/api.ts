@@ -1,6 +1,6 @@
 export const getApiUrl = (): string => {
   if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
-  if (import.meta.env.MODE === 'production') return '/';
+  if (import.meta.env.MODE === 'production') return 'https://apimmadouglasbackend.onrender.com/';
   return 'http://localhost:3000';
 };
 
