@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { apiGet } from '../lib/api';
 import LutadorCard from '../components/LutadorCard';
+import Modal from '../components/Modal';
+import AddItemForm from '../components/AddItemForm';
 import type { JSX } from 'react/jsx-runtime';
 
 type Lutador = {
@@ -18,6 +20,7 @@ export default function Lutadores(): JSX.Element {
   const [data, setData] = useState<Lutador[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -37,6 +40,12 @@ export default function Lutadores(): JSX.Element {
       .finally(() => mounted && setLoading(false));
     return () => { mounted = false; };
   }, []);
+
+  const handleAddSuccess = (newItem: any) => {
+    // adiciona ao topo da lista
+    setData((prev) => prev ? [newItem, ...prev] : [newItem]);
+    setIsOpen(false);
+  };
 
   // Placeholders simples para loading
   if (loading) {
@@ -66,7 +75,7 @@ export default function Lutadores(): JSX.Element {
           <h1 className="text-3xl font-bold text-white">Lutadores</h1>
           <p className="text-neutral-400">Gerencie os lutadores cadastrados</p>
         </div>
-        <button className="px-4 py-2 bg-red-600 text-white rounded-md">+ Adicionar Lutador</button>
+        <button onClick={() => setIsOpen(true)} className="px-4 py-2 bg-red-600 text-white rounded-md">+ Adicionar Lutador</button>
       </div>
 
       {error && <div className="text-red-500 mb-4">Erro: {error}</div>}
@@ -98,6 +107,10 @@ export default function Lutadores(): JSX.Element {
       </div>
 
       {(!data || data.length === 0) && <div className="text-neutral-400 mt-6">Nenhum lutador encontrado.</div>}
+
+      <Modal isOpen={isOpen} title="Adicionar Lutador" onClose={() => setIsOpen(false)}>
+        <AddItemForm apiUrl={'/lutadores'} onAddSuccess={handleAddSuccess} onClose={() => setIsOpen(false)} />
+      </Modal>
     </div>
   );
 }
