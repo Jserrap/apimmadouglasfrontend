@@ -16,7 +16,7 @@ type Lutador = {
 export default function Lutadores(): React.ReactElement {
   const [data, setData] = useState<Lutador[] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // REMOVED: error state
 
   useEffect(() => {
     let mounted = true;
@@ -26,11 +26,11 @@ export default function Lutadores(): React.ReactElement {
         if (!mounted) return;
         const normalized = (res && (res as any).data) ? (res as any).data : res;
         setData(normalized);
-        setError(null);
+        // REMOVED: setError
       })
-      .catch((err) => {
+      .catch(() => {
         if (!mounted) return;
-        setError(err.message || 'Erro ao buscar lutadores');
+        // Optionally: handle error logic here, but don't need state variable if not showing error
       })
       .finally(() => mounted && setLoading(false));
     return () => { mounted = false; };
