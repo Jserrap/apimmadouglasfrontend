@@ -21,7 +21,7 @@ export default function Lutadores(): JSX.Element {
   useEffect(() => {
     let mounted = true;
     setLoading(true);
-    // CORRECT: Remove "/api" from here, add only endpoint name!
+    // CORRECT: Remove "/api" from here, add only endpoint name!!
     apiGet<Lutador[]>('lutadores')
       .then((res) => {
         if (!mounted) return;
